@@ -17,7 +17,6 @@ function eventsource() {
     return;
   }
 
-  // eslint-disable-next-line compat/compat
   var source = new EventSource("scripts/pi-hole/php/gravity.sh.php");
 
   ta.html("");
@@ -35,11 +34,11 @@ function eventsource() {
       // Detect ${OVER}
       var newString = "<------";
 
-      if (e.data.indexOf(newString) !== -1) {
+      if (e.data.indexOf(newString) === -1) {
+        ta.append(e.data);
+      } else {
         ta.text(ta.text().substring(0, ta.text().lastIndexOf("\n")) + "\n");
         ta.append(e.data.replace(newString, ""));
-      } else {
-        ta.append(e.data);
       }
     },
     false

@@ -20,10 +20,10 @@ var DAY_IN_SECONDS = 24 * 60 * 60;
 function handleAjaxError(xhr, textStatus) {
   if (textStatus === "timeout") {
     alert("The server took too long to send the data.");
-  } else if (xhr.responseText.indexOf("Connection refused") !== -1) {
-    alert("An error occurred while loading the data: Connection refused. Is FTL running?");
-  } else {
+  } else if (xhr.responseText.indexOf("Connection refused") === -1) {
     alert("An unknown error occurred while loading the data.\n" + xhr.responseText);
+  } else {
+    alert("An error occurred while loading the data: Connection refused. Is FTL running?");
   }
 
   $("#network-entries_processing").hide();
@@ -65,7 +65,7 @@ function deleteNetworkEntry() {
   var id = tr.attr("data-id");
 
   utils.disableAll();
-  utils.showAlert("info", "", "Deleting network table entry with ID " + parseInt(id, 10), "...");
+  utils.showAlert("info", "", "Deleting network table entry...");
   $.ajax({
     url: "scripts/pi-hole/php/network.php",
     method: "post",
@@ -74,12 +74,7 @@ function deleteNetworkEntry() {
     success: function (response) {
       utils.enableAll();
       if (response.success) {
-        utils.showAlert(
-          "success",
-          "far fa-trash-alt",
-          "Successfully deleted network table entry # ",
-          id
-        );
+        utils.showAlert("success", "far fa-trash-alt", "Successfully deleted network table entry");
         tableApi.row(tr).remove().draw(false).ajax.reload(null, false);
       } else {
         utils.showAlert(
@@ -178,7 +173,7 @@ $(function () {
         }
 
         $("td:eq(3)", row).html(names.join("<br>"));
-        $("td:eq(3)", row).hover(function () {
+        $("td:eq(3)", row).on("hover", function () {
           this.title = allnames.join("\n");
         });
       }
@@ -201,7 +196,7 @@ $(function () {
       }
 
       $("td:eq(0)", row).html(ips.join("<br>"));
-      $("td:eq(0)", row).hover(function () {
+      $("td:eq(0)", row).on("hover", function () {
         this.title = data.ip.join("\n");
       });
 
